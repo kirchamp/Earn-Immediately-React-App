@@ -1,0 +1,182 @@
+// App.js
+import React, { useState } from 'react';
+import './App.css';
+
+const QuickEarn = () => {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      title: "Label 50 product images",
+      type: "data labeling",
+      pay: "12-18",
+      duration: "20-40 min",
+      difficulty: "beginner",
+      payout: "today",
+      status: "available"
+    },
+    {
+      id: 2,
+      title: "Write 200-word product description",
+      type: "content writing", 
+      pay: "8-12",
+      duration: "15-25 min",
+      difficulty: "beginner",
+      payout: "instant",
+      status: "available"
+    },
+    {
+      id: 3,
+      title: "Translate English to Spanish - 150 words",
+      type: "translation",
+      pay: "10-15",
+      duration: "10-15 min", 
+      difficulty: "beginner",
+      payout: "today",
+      status: "available"
+    },
+    {
+      id: 4,
+      title: "Test new food delivery app features",
+      type: "app testing",
+      pay: "15-20",
+      duration: "25-35 min",
+      difficulty: "beginner",
+      payout: "today",
+      status: "available"
+    },
+    {
+      id: 5,
+      title: "5-min survey about social media habits",
+      type: "survey",
+      pay: "5",
+      duration: "5-7 min",
+      difficulty: "beginner", 
+      payout: "instant",
+      status: "available"
+    }
+  ]);
+
+  const [earnings, setEarnings] = useState(0);
+  const [activeTask, setActiveTask] = useState(null);
+
+  const startTask = (taskId) => {
+    setActiveTask(taskId);
+    // Simulate task completion after delay
+    setTimeout(() => completeTask(taskId), 3000);
+  };
+
+  const completeTask = (taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      const minPay = parseInt(task.pay.split('-')[0]);
+      setEarnings(prev => prev + minPay);
+      setTasks(prev => prev.map(t => 
+        t.id === taskId ? {...t, status: "completed"} : t
+      ));
+      setActiveTask(null);
+    }
+  };
+
+  const getTaskIcon = (type) => {
+    const icons = {
+      'data labeling': '🏷️',
+      'content writing': '📝',
+      'translation': '🌐',
+      'app testing': '📱',
+      'survey': '📊'
+    };
+    return icons[type] || '💼';
+  };
+
+  return (
+    <div className="app">
+      {/* Header */}
+      <header className="header">
+        <div className="logo">QuickEarn</div>
+        <nav>
+          <button className="nav-btn">Browse Tasks</button>
+          <button className="nav-btn">Earnings</button>
+          <button className="nav-btn primary">Sign Up</button>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <h1>🚀 Start Earning in 15 Minutes</h1>
+        <p>No experience required • Daily payouts • Flexible hours</p>
+        <button className="cta-button">Browse Available Tasks</button>
+      </section>
+
+      {/* Quick Stats */}
+      <div className="stats">
+        <div className="stat-card">
+          <div className="stat-number">${earnings.toFixed(2)}</div>
+          <div className="stat-label">Today's Earnings</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{tasks.filter(t => t.status === 'available').length}</div>
+          <div className="stat-label">Available Tasks</div>
+        </div>
+      </div>
+
+      {/* Task Filter */}
+      <div className="filter-bar">
+        <button className="filter-btn active">All Tasks</button>
+        <button className="filter-btn">Quick Payout</button>
+        <button className="filter-btn">Beginner Friendly</button>
+        <button className="filter-btn">Under 30min</button>
+      </div>
+
+      {/* Task Grid */}
+      <div className="task-grid">
+        {tasks.map(task => (
+          <div key={task.id} className={`task-card ${task.status}`}>
+            <div className="task-header">
+              <span className="task-icon">{getTaskIcon(task.type)}</span>
+              <span className="task-type">{task.type}</span>
+            </div>
+            
+            <h3 className="task-title">{task.title}</h3>
+            
+            <div className="task-meta">
+              <span className="pay">${task.pay}</span>
+              <span className="duration">{task.duration}</span>
+              <span className="difficulty">{task.difficulty}</span>
+            </div>
+
+            <div className="task-payout">
+              {task.payout === 'instant' ? '🔥 Instant payout' : '💰 Pays today'}
+            </div>
+
+            {task.status === 'available' && (
+              <button 
+                className={`task-button ${activeTask === task.id ? 'working' : ''}`}
+                onClick={() => startTask(task.id)}
+                disabled={activeTask !== null}
+              >
+                {activeTask === task.id ? 'Working...' : 'Start Now'}
+              </button>
+            )}
+
+            {task.status === 'completed' && (
+              <button className="task-button completed" disabled>
+                ✅ Completed
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Working Animation */}
+      {activeTask && (
+        <div className="working-overlay">
+          <div className="working-spinner">⚡</div>
+          <h3>Working on task...</h3>
+          <p>Earnings will be added in a few seconds</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default QuickEarn;
