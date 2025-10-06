@@ -1,182 +1,292 @@
-// App.js
-import React, { useState } from 'react';
-import './App.css';
+/* App.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-const QuickEarn = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Label 50 product images",
-      type: "data labeling",
-      pay: "12-18",
-      duration: "20-40 min",
-      difficulty: "beginner",
-      payout: "today",
-      status: "available"
-    },
-    {
-      id: 2,
-      title: "Write 200-word product description",
-      type: "content writing", 
-      pay: "8-12",
-      duration: "15-25 min",
-      difficulty: "beginner",
-      payout: "instant",
-      status: "available"
-    },
-    {
-      id: 3,
-      title: "Translate English to Spanish - 150 words",
-      type: "translation",
-      pay: "10-15",
-      duration: "10-15 min", 
-      difficulty: "beginner",
-      payout: "today",
-      status: "available"
-    },
-    {
-      id: 4,
-      title: "Test new food delivery app features",
-      type: "app testing",
-      pay: "15-20",
-      duration: "25-35 min",
-      difficulty: "beginner",
-      payout: "today",
-      status: "available"
-    },
-    {
-      id: 5,
-      title: "5-min survey about social media habits",
-      type: "survey",
-      pay: "5",
-      duration: "5-7 min",
-      difficulty: "beginner", 
-      payout: "instant",
-      status: "available"
-    }
-  ]);
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+}
 
-  const [earnings, setEarnings] = useState(0);
-  const [activeTask, setActiveTask] = useState(null);
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  const startTask = (taskId) => {
-    setActiveTask(taskId);
-    // Simulate task completion after delay
-    setTimeout(() => completeTask(taskId), 3000);
-  };
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 40px;
+}
 
-  const completeTask = (taskId) => {
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
-      const minPay = parseInt(task.pay.split('-')[0]);
-      setEarnings(prev => prev + minPay);
-      setTasks(prev => prev.map(t => 
-        t.id === taskId ? {...t, status: "completed"} : t
-      ));
-      setActiveTask(null);
-    }
-  };
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
 
-  const getTaskIcon = (type) => {
-    const icons = {
-      'data labeling': '🏷️',
-      'content writing': '📝',
-      'translation': '🌐',
-      'app testing': '📱',
-      'survey': '📊'
-    };
-    return icons[type] || '💼';
-  };
+.nav-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-  return (
-    <div className="app">
-      {/* Header */}
-      <header className="header">
-        <div className="logo">QuickEarn</div>
-        <nav>
-          <button className="nav-btn">Browse Tasks</button>
-          <button className="nav-btn">Earnings</button>
-          <button className="nav-btn primary">Sign Up</button>
-        </nav>
-      </header>
+.nav-btn.primary {
+  background: #ff6b6b;
+  border-color: #ff6b6b;
+}
 
-      {/* Hero Section */}
-      <section className="hero">
-        <h1>🚀 Start Earning in 15 Minutes</h1>
-        <p>No experience required • Daily payouts • Flexible hours</p>
-        <button className="cta-button">Browse Available Tasks</button>
-      </section>
+.nav-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
 
-      {/* Quick Stats */}
-      <div className="stats">
-        <div className="stat-card">
-          <div className="stat-number">${earnings.toFixed(2)}</div>
-          <div className="stat-label">Today's Earnings</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{tasks.filter(t => t.status === 'available').length}</div>
-          <div className="stat-label">Available Tasks</div>
-        </div>
-      </div>
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+}
 
-      {/* Task Filter */}
-      <div className="filter-bar">
-        <button className="filter-btn active">All Tasks</button>
-        <button className="filter-btn">Quick Payout</button>
-        <button className="filter-btn">Beginner Friendly</button>
-        <button className="filter-btn">Under 30min</button>
-      </div>
+.hero h1 {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 20px;
+}
 
-      {/* Task Grid */}
-      <div className="task-grid">
-        {tasks.map(task => (
-          <div key={task.id} className={`task-card ${task.status}`}>
-            <div className="task-header">
-              <span className="task-icon">{getTaskIcon(task.type)}</span>
-              <span className="task-type">{task.type}</span>
-            </div>
-            
-            <h3 className="task-title">{task.title}</h3>
-            
-            <div className="task-meta">
-              <span className="pay">${task.pay}</span>
-              <span className="duration">{task.duration}</span>
-              <span className="difficulty">{task.difficulty}</span>
-            </div>
+.hero p {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 30px;
+}
 
-            <div className="task-payout">
-              {task.payout === 'instant' ? '🔥 Instant payout' : '💰 Pays today'}
-            </div>
+.cta-button {
+  background: #ffd93d;
+  color: #333;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
 
-            {task.status === 'available' && (
-              <button 
-                className={`task-button ${activeTask === task.id ? 'working' : ''}`}
-                onClick={() => startTask(task.id)}
-                disabled={activeTask !== null}
-              >
-                {activeTask === task.id ? 'Working...' : 'Start Now'}
-              </button>
-            )}
+.cta-button:hover {
+  transform: translateY(-2px);
+}
 
-            {task.status === 'completed' && (
-              <button className="task-button completed" disabled>
-                ✅ Completed
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
+/* Stats */
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
 
-      {/* Working Animation */}
-      {activeTask && (
-        <div className="working-overlay">
-          <div className="working-spinner">⚡</div>
-          <h3>Working on task...</h3>
-          <p>Earnings will be added in a few seconds</p>
-        </div>
-      )}
-    </div>
-  );
-};
+.stat-card {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
 
-export default QuickEarn;
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.stat-label {
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Filter */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+  background: #667eea;
+  color: white;
+}
+
+/* Task Grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.task-card {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.task-icon {
+  font-size: 1.5rem;
+}
+
+.task-type {
+  background: #f8f9fa;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.task-title {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.task-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.task-meta span {
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.pay {
+  background: #c8f7c5;
+  color: #2e7d32;
+}
+
+.duration {
+  background: #ffe0b2;
+  color: #ef6c00;
+}
+
+.difficulty {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.task-payout {
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.task-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #667eea;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.task-button:hover:not(:disabled) {
+  background: #5a6fd8;
+}
+
+.task-button.working {
+  background: #ffd93d;
+  color: #333;
+}
+
+.task-button.completed {
+  background: #c8f7c5;
+  color: #2e7d32;
+}
+
+/* Working Overlay */
+.working-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 1000;
+}
+
+.working-spinner {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .stats {
+    flex-direction: column;
+  }
+  
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+}
